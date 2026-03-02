@@ -12,6 +12,8 @@ export default function PowerPrediction() {
   const [devices, setDevices] = useState([])
   const [selectedDevice, setSelectedDevice] = useState("")
   const [viewType, setViewType] = useState("single")
+  const [prediction, setPrediction] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   /* FETCH DEVICES */
   useEffect(() => {
@@ -29,10 +31,71 @@ export default function PowerPrediction() {
   const selectedDeviceName =
     devices.find(d => d._id === selectedDevice)?.name || ""
 
+  /* 🔥 ADD PREDICTION FUNCTION */
+  const fetchPrediction = async () => {
+    if (!selectedDevice) {
+      alert("Please select a device")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/predict/${selectedDevice}`
+      )
+
+      const data = await res.json()
+
+      if (data.message) {
+        alert(data.message)
+        setPrediction(null)
+        setLoading(false)
+        return
+      }
+
+      let updatedPrediction = { ...data }
+
+      const selected = new Date(selectedDate)
+      const avgUsageMinutes = data.averageUsageMinutes
+
+      /* SINGLE DAY */
+      if (viewType === "single") {
+        updatedPrediction.predictedNextOnTime = selected
+        updatedPrediction.predictedNextOffTime = new Date(
+          selected.getTime() + (avgUsageMinutes * 60 * 1000)
+        )
+      }
+
+      /* WEEKLY */
+      if (viewType === "week") {
+        const weeklyUsage = data.nextDayKWh * 7
+        updatedPrediction.nextWeekKWh = weeklyUsage.toFixed(2)
+        updatedPrediction.estimatedWeeklyBill =
+          (weeklyUsage * 6).toFixed(2)
+      }
+
+      /* MONTHLY */
+      if (viewType === "month") {
+        const monthlyUsage = data.nextDayKWh * 30
+        updatedPrediction.nextMonthKWh = monthlyUsage.toFixed(2)
+        updatedPrediction.estimatedMonthlyBill =
+          (monthlyUsage * 6).toFixed(2)
+      }
+
+      setPrediction(updatedPrediction)
+
+    } catch (err) {
+      console.error("Prediction error:", err)
+    }
+
+    setLoading(false)
+  }
+
   return (
     <div className="dashboard-dark">
 
-      {/* ===== SIDEBAR ===== */}
+      {/* SIDEBAR */}
       <div className="dark-sidebar">
 
         <div className="smart-home-logo">
@@ -64,7 +127,7 @@ export default function PowerPrediction() {
 
       </div>
 
-      {/* ===== MAIN ===== */}
+      {/* MAIN */}
       <div className="dark-main">
 
         <h2 className="premium-report-header">
@@ -73,7 +136,7 @@ export default function PowerPrediction() {
 
         <div className="details-layout">
 
-          {/* ===== LEFT PANEL ===== */}
+          {/* LEFT PANEL */}
           <div className="details-card">
 
             <h4>Select Date for Prediction</h4>
@@ -81,6 +144,7 @@ export default function PowerPrediction() {
             <Calendar
               onChange={setSelectedDate}
               value={selectedDate}
+              minDate={new Date()}   /* Disable past days */
             />
 
             <div style={{ marginTop: 20 }}>
@@ -105,7 +169,7 @@ export default function PowerPrediction() {
 
           </div>
 
-          {/* ===== RIGHT PANEL ===== */}
+          {/* RIGHT PANEL */}
           <div className="details-card">
 
             <h4>
@@ -132,9 +196,49 @@ export default function PowerPrediction() {
             <button
               className="premium-btn"
               style={{ marginTop: 15 }}
+              onClick={fetchPrediction}
             >
               🚀 Fetch Predictions for {selectedDate.toLocaleDateString()}
             </button>
+
+            {prediction && (
+              <div className="prediction-result">
+
+                {viewType === "single" && (
+                  <>
+                    <h4>🔮 Predicted ON Time:</h4>
+                    <p>{new Date(prediction.predictedNextOnTime).toLocaleString()}</p>
+
+                    <h4>⏻ Predicted OFF Time:</h4>
+                    <p>{new Date(prediction.predictedNextOffTime).toLocaleString()}</p>
+
+                    <h4>⚡ Estimated Usage:</h4>
+                    <p>{prediction.nextDayKWh} kWh</p>
+                  </>
+                )}
+
+                {viewType === "week" && (
+                  <>
+                    <h4>📊 Next Week Usage:</h4>
+                    <p>{prediction.nextWeekKWh} kWh</p>
+
+                    <h4>💰 Estimated Weekly Bill:</h4>
+                    <p>₹ {prediction.estimatedWeeklyBill}</p>
+                  </>
+                )}
+
+                {viewType === "month" && (
+                  <>
+                    <h4>📅 Next Month Usage:</h4>
+                    <p>{prediction.nextMonthKWh} kWh</p>
+
+                    <h4>💰 Estimated Monthly Bill:</h4>
+                    <p>₹ {prediction.estimatedMonthlyBill}</p>
+                  </>
+                )}
+
+              </div>
+            )}
 
             <p style={{ marginTop: 15, opacity: 0.7 }}>
               Select a date and view type, then click 'Fetch Predictions'.

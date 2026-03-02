@@ -4618,3 +4618,124 @@ margin:40px auto;
   color: #00e0ff;
   font-weight: 600;
 }
+
+
+
+
+/* ===== PROFESSIONAL PREDICTION CARD ===== */
+.prediction-result {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #0f172a, #1e293b);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.prediction-result h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+
+.prediction-result p {
+  font-size: 18px;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 15px;
+}
+
+.prediction-result p:last-child {
+  color: #22c55e;
+}
+
+/* Smooth Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+.premium-btn {
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 15px rgba(37,99,235,0.4);
+}
+
+.premium-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37,99,235,0.6);
+}
+
+
+/* ===== DARK CLEAR PREMIUM CALENDAR ===== */
+
+.react-calendar {
+  background: linear-gradient(145deg, #0f172a, #1e293b) !important;
+  border-radius: 18px;
+  padding: 15px;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  color: #e2e8f0 !important;
+}
+
+/* Navigation (Month header) */
+.react-calendar__navigation {
+  background: transparent;
+  margin-bottom: 10px;
+}
+
+.react-calendar__navigation button {
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Weekday names */
+.react-calendar__month-view__weekdays {
+  color: #94a3b8 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* Normal days */
+.react-calendar__tile {
+  background: transparent;
+  color: #e2e8f0 !important;
+  border-radius: 10px;
+  padding: 10px 0;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.react-calendar__tile:hover {
+  background: rgba(37, 99, 235, 0.25) !important;
+  color: #ffffff !important;
+}
+
+/* Selected date */
+.react-calendar__tile--active {
+  background: linear-gradient(135deg, #2563eb, #06b6d4) !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+/* Today highlight */
+.react-calendar__tile--now {
+  background: rgba(255,255,255,0.1) !important;
+  color: #ffffff !important;
+  border-radius: 10px;
+}
+
+/* Disabled past dates */
+.react-calendar__tile--disabled {
+  color: #475569 !important;
+  opacity: 0.5;
+}
