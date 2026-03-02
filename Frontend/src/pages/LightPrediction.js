@@ -118,7 +118,7 @@ export default function LightPrediction() {
   return (
     <div className="dashboard-dark">
 
-      {/* SIDEBAR */}
+       {/* SIDEBAR */}
       <div className="dark-sidebar">
 
         <div className="smart-home-logo">
@@ -130,25 +130,26 @@ export default function LightPrediction() {
         </div>
 
         <ul>
-          <li onClick={() => navigate("/resident")}>Dashboard</li>
+          <li onClick={() => navigate("/resident")}>Home</li>
           <li onClick={() => navigate("/devices")}>Devices</li>
+          <li onClick={() => navigate("/locations")}>Locations</li>
+          <li onClick={() => navigate("/device-details")}>Device Details</li>
           <li onClick={() => navigate("/reports")}>Reports</li>
-          <li className="active">Predictive Reports</li>
-          <li>Feedback and Update Log</li>
-          <li>Settings</li>
+          <li onClick={() => navigate("/predictive")}>Predictive Report</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
+          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          
         </ul>
-
         <button
-          className="premium-logout-btn"
-          onClick={() => {
-            localStorage.clear()
-            navigate("/")
-          }}
-        >
-          ⏻ Logout
-        </button>
+  className="premium-logout-btn"
+  onClick={() => {
+    localStorage.clear()
+    navigate("/")
+  }}
+>
+  ⏻ Logout
+</button>
       </div>
-
       {/* MAIN */}
       <div className="dark-main">
 

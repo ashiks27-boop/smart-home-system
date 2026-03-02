@@ -162,9 +162,9 @@ export default function FanUsageReport() {
 
   return (
     <div className="energy-layout">
+ {/* SIDEBAR */}
+      <div className="dark-sidebar">
 
-      {/* SIDEBAR */}
-      <div className="sidebar">
         <div className="smart-home-logo">
           <div className="smart-icon">💎</div>
           <div className="smart-text">
@@ -175,7 +175,14 @@ export default function FanUsageReport() {
 
         <ul>
           <li onClick={() => navigate("/resident")}>Home</li>
-          <li className="active" onClick={() => navigate("/reports")}>Reports</li>
+          <li onClick={() => navigate("/devices")}>Devices</li>
+          <li onClick={() => navigate("/locations")}>Locations</li>
+          <li onClick={() => navigate("/device-details")}>Device Details</li>
+          <li onClick={() => navigate("/reports")}>Reports</li>
+          <li onClick={() => navigate("/predictive")}>Predictive Report</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
+          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          
         </ul>
         <button
   className="premium-logout-btn"
@@ -187,7 +194,6 @@ export default function FanUsageReport() {
   ⏻ Logout
 </button>
       </div>
-
       {/* MAIN */}
       <div className="dashboard-main">
 

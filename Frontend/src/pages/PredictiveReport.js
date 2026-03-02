@@ -8,7 +8,7 @@ export default function PredictiveReport() {
   return (
     <div className="dashboard-dark">
 
-      {/* SIDEBAR */}
+       {/* SIDEBAR */}
       <div className="dark-sidebar">
 
         <div className="smart-home-logo">
@@ -21,9 +21,14 @@ export default function PredictiveReport() {
 
         <ul>
           <li onClick={() => navigate("/resident")}>Home</li>
-          <li className="active">Predictive Report</li>
+          <li onClick={() => navigate("/devices")}>Devices</li>
+          <li onClick={() => navigate("/locations")}>Locations</li>
+          <li onClick={() => navigate("/device-details")}>Device Details</li>
           <li onClick={() => navigate("/reports")}>Reports</li>
-         
+          <li onClick={() => navigate("/predictive")}>Predictive Report</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
+          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          
         </ul>
         <button
   className="premium-logout-btn"

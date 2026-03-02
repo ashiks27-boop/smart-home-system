@@ -120,7 +120,9 @@ export default function EnergyConsumptionReport() {
   return (
     <div className="energy-layout">
 
-      <div className="sidebar">
+      {/* SIDEBAR */}
+      <div className="dark-sidebar">
+
         <div className="smart-home-logo">
           <div className="smart-icon">💎</div>
           <div className="smart-text">
@@ -131,7 +133,14 @@ export default function EnergyConsumptionReport() {
 
         <ul>
           <li onClick={() => navigate("/resident")}>Home</li>
+          <li onClick={() => navigate("/devices")}>Devices</li>
+          <li onClick={() => navigate("/locations")}>Locations</li>
+          <li onClick={() => navigate("/device-details")}>Device Details</li>
           <li onClick={() => navigate("/reports")}>Reports</li>
+          <li onClick={() => navigate("/predictive")}>Predictive Report</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
+          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          
         </ul>
         <button
   className="premium-logout-btn"

@@ -64,8 +64,8 @@ export default function ResidentLocations() {
   return (
     <div className="dashboard-layout">
 
-      {/* SIDEBAR */}
-      <div className="sidebar">
+     {/* SIDEBAR */}
+      <div className="dark-sidebar">
 
         <div className="smart-home-logo">
           <div className="smart-icon">💎</div>
@@ -78,13 +78,13 @@ export default function ResidentLocations() {
         <ul>
           <li onClick={() => navigate("/resident")}>Home</li>
           <li onClick={() => navigate("/devices")}>Devices</li>
-          <li
-            className={location.pathname === "/reports" ? "active" : ""}
-            onClick={() => navigate("/reports")}
-          >
-            Reports
-          </li>
-        
+          <li onClick={() => navigate("/locations")}>Locations</li>
+          <li onClick={() => navigate("/device-details")}>Device Details</li>
+          <li onClick={() => navigate("/reports")}>Reports</li>
+          <li onClick={() => navigate("/predictive")}>Predictive Report</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
+          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          
         </ul>
         <button
   className="premium-logout-btn"

@@ -4739,3 +4739,233 @@ margin:40px auto;
   color: #475569 !important;
   opacity: 0.5;
 }
+
+
+
+
+
+
+
+
+/* ===== DARK ADMIN LAYOUT ===== */
+
+.admin-dark-layout {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #0f172a, #1e293b);
+  color: white;
+}
+
+/* SIDEBAR */
+.admin-dark-sidebar {
+  width: 240px;
+  background: #0b1220;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.admin-dark-logo {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.admin-dark-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-dark-sidebar li {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.admin-dark-sidebar li:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.admin-dark-sidebar li.active {
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+}
+
+.admin-dark-logout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+/* MAIN */
+.admin-dark-main {
+  flex: 1;
+  padding: 30px;
+}
+
+.admin-dark-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.admin-dark-header p {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* CARDS */
+.admin-dark-card {
+  background: #1e293b !important;
+  border: none !important;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.label-muted {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.label-success {
+  font-size: 12px;
+  color: #22c55e;
+}
+
+.label-danger {
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* TABLE */
+.admin-dark-table {
+  background: #1e293b !important;
+  border: none !important;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.admin-table-dark {
+  color: white !important;
+}
+
+.admin-table-dark thead th {
+  color: #94a3b8;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.admin-table-dark td {
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* STATUS */
+.status-online {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.status-offline {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+
+
+
+
+/* PAGE TITLE */
+.page-title {
+  margin-bottom: 25px;
+}
+
+/* UPDATE CARD */
+.update-card {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 14px;
+  width: 350px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  margin-bottom: 20px;
+}
+
+.update-card h4 {
+  margin-bottom: 15px;
+}
+
+.update-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #0f172a;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.update-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #0f172a;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.update-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.update-btn:hover {
+  opacity: 0.9;
+}
+
+/* UPDATES LIST */
+.updates-section {
+  margin-top: 20px;
+}
+
+.update-item {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.update-type {
+  font-size: 12px;
+  color: #06b6d4;
+  margin-bottom: 5px;
+}
+
+.update-message {
+  font-size: 14px;
+}
+
+.update-date {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 5px;
+}
+
+.loading-text {
+  color: #94a3b8;
+}

@@ -16,6 +16,10 @@ import PredictiveReport from "./pages/PredictiveReport"
 import LightPrediction from "./pages/LightPrediction"
 import PowerPrediction from "./pages/PowerPrediction"
 import WeatherPrediction from "./pages/WeatherPrediction"
+import UpdateLog from "./pages/UpdateLog";
+import AdminFeedback from "./pages/AdminFeedback"
+import ResidentFeedback from "./pages/ResidentFeedback"
+import ResidentUpdateLog from "./pages/ResidentUpdateLog"
 
 function App() {
   return (
@@ -26,13 +30,17 @@ function App() {
         <Route path="/resident" element={<ResidentDashboard />} />
         <Route path="/devices" element={<ResidentDevices />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/update-log" element={<UpdateLog />} />
         <Route path="/locations" element={<ResidentLocations />} />
         <Route path="/reports" element={<ResidentReports />} />
         <Route path="/predictive" element={<PredictiveReport />} />
         <Route path="/predictive/light" element={<LightPrediction />} />
         <Route path="/predictive/power" element={<PowerPrediction />} />
         <Route path="/predictive/weather" element={<WeatherPrediction />} />
-       
+       <Route path="/admin/feedback" element={<AdminFeedback />} />
+
+<Route path="/resident/feedback" element={<ResidentFeedback />} />
+<Route path="/resident/update-log" element={<ResidentUpdateLog />} />
        {/* ✅ THIS IS THE KEY ROUTE */}
         <Route path="/device-details" element={<DeviceDetails />} />
 

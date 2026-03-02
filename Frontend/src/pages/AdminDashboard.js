@@ -1,5 +1,4 @@
 import { Row, Col, Card, Table, Button } from "react-bootstrap"
-import Chart from "react-apexcharts"
 import { useNavigate } from "react-router-dom"
 import "./Auth.css"
 
@@ -12,172 +11,77 @@ export default function AdminDashboard() {
     navigate("/")
   }
 
-  // Chart Config
-  const energyChart = {
-    series: [
-      {
-        name: "Energy Usage",
-        data: [120, 200, 150, 300, 250, 400, 350]
-      }
-    ],
-    options: {
-      chart: { type: "line" },
-      xaxis: {
-        categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-      },
-      stroke: { curve: "smooth" }
-    }
-  }
-
-  const deviceChart = {
-    series: [60, 25, 15],
-    options: {
-      labels: ["Active", "Inactive", "Error"],
-      chart: { type: "pie" }
-    }
-  }
-
   return (
-    <div className="admin-layout">
-      
-      {/* SIDEBAR */}
-      <div className="admin-sidebar">
-        <div className="admin-logo">SmartHome</div>
+    <div className="admin-dark-layout">
 
-        <div className="admin-profile">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            alt="Admin"
-          />
-          <h3>{adminName}</h3>
-          <p>admin@smarthome.com</p>
+      {/* SIDEBAR */}
+      <div className="admin-dark-sidebar">
+        <div>
+          <div className="admin-dark-logo">💎 Smart Home</div>
+
+          <ul>
+            <li className="active" onClick={() => navigate("/admin")}>
+              📊 Dashboard
+            </li>
+
+            <li onClick={() => navigate("/admin/update-log")}>
+              📝 Update Log
+            </li>
+
+            <li onClick={() => navigate("/admin/feedback")}>
+              💬 User Feedback
+            </li>
+          </ul>
         </div>
 
-        <ul>
-          <li className="active">📊 Dashboard</li>
-          <li>👥 Residents</li>
-          <li>📟 Devices</li>
-          <li>⚙️ Settings</li>
-          
-        </ul>
-        <button
-  className="premium-logout-btn"
-  onClick={() => {
-    localStorage.clear()
-    navigate("/")
-  }}
->
-  ⏻ Logout
-</button>
+        <button className="admin-dark-logout" onClick={logout}>
+          ⏻ Logout
+        </button>
       </div>
 
       {/* MAIN */}
-      <div className="admin-main">
+      <div className="admin-dark-main">
 
-        {/* HEADER */}
-        <div className="admin-header">
-          <h2>Admin Dashboard</h2>
-          <div className="header-icons">
-            <span>🌐</span>
-            <span>🔔</span>
-            <span>⚙️</span>
+        <div className="admin-dark-header">
+          <div>
+            <h2>Admin Dashboard</h2>
+            <p>System Overview & Management</p>
+          </div>
+          <div className="admin-user">
+            👤 {adminName}
           </div>
         </div>
 
-        {/* TOP STATS */}
         <Row className="mb-4">
           <Col md={3}>
-            <Card className="admin-card">
-              <h4>Total Residents</h4>
-              <h2>2</h2>
-            </Card>
-          </Col>
-          <Col md={3}>
-            <Card className="admin-card">
-              <h4>Active Devices</h4>
-              <h2>2</h2>
-            </Card>
-          </Col>
-          <Col md={3}>
-            <Card className="admin-card">
-              <h4>Energy Usage</h4>
-              <h2>0kWh</h2>
-            </Card>
-          </Col>
-          <Col md={3}>
-            <Card className="admin-card">
-              <h4>Alerts</h4>
-              <h2>2</h2>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* CHARTS */}
-        <Row>
-          <Col md={8}>
-            <Card className="admin-chart">
-              <h5>Weekly Energy Consumption</h5>
-              <Chart
-                options={energyChart.options}
-                series={energyChart.series}
-                type="line"
-                height={300}
-              />
+            <Card className="admin-dark-card">
+              <h6>Total Residents</h6>
+              <h3>2</h3>
+              <span className="label-muted">Registered Users</span>
             </Card>
           </Col>
 
-          <Col md={4}>
-            <Card className="admin-chart">
-              <h5>Device Status</h5>
-              <Chart
-                options={deviceChart.options}
-                series={deviceChart.series}
-                type="pie"
-                height={300}
-              />
+          <Col md={3}>
+            <Card className="admin-dark-card">
+              <h6>Total Devices</h6>
+              <h3>3</h3>
+              <span className="label-muted">Connected Devices</span>
             </Card>
           </Col>
-        </Row>
 
-        {/* TABLE */}
-        <Row className="mt-4">
-          <Col>
-            <Card className="admin-table">
-              <h5>Resident Activity</h5>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Ashik</td>
-                    <td>8888888888</td>
-                    <td>
-                      <span className="status booked">Online</span>
-                    </td>
-                    <td>
-                      <Button size="sm">View</Button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Rahul</td>
-                    <td>7777777777</td>
-                    <td>
-                      <span className="status offline">Offline</span>
-                    </td>
-                    <td>
-                      <Button size="sm" variant="secondary">
-                        View
-                      </Button>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+          <Col md={3}>
+            <Card className="admin-dark-card">
+              <h6>Active Devices</h6>
+              <h3 className="text-success">2</h3>
+              <span className="label-success">Running Now</span>
+            </Card>
+          </Col>
+
+          <Col md={3}>
+            <Card className="admin-dark-card">
+              <h6>System Alerts</h6>
+              <h3 className="text-danger">1</h3>
+              <span className="label-danger">Needs Attention</span>
             </Card>
           </Col>
         </Row>
