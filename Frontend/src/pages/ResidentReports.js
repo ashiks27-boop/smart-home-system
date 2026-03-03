@@ -81,7 +81,7 @@ export default function ResidentReports() {
           <div className="report-card"
            onClick={() => navigate("/reports/fan")}
            style={{ cursor: "pointer" }}>
-            <div className="report-icon">🌀</div>
+            <div className="report-icon">✇</div>
             <h3>Fan Usage Report</h3>
             <p>View detailed fan usage insights</p>
           </div>

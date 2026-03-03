@@ -192,7 +192,7 @@ export default function LightPrediction() {
           <div className="details-card">
 
             <h4>
-              📊 Prediction for {selectedDeviceName || "-- Select a Device --"}
+               Prediction for {selectedDeviceName || "-- Select a Device --"}
             </h4>
 
             <div style={{ marginTop: 15 }}>
@@ -217,7 +217,7 @@ export default function LightPrediction() {
               style={{ marginTop: 15 }}
               onClick={fetchPrediction}
             >
-              🚀 Fetch Predictions
+               Fetch Predictions
             </button>
 
             {prediction && (

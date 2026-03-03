@@ -149,7 +149,7 @@ export default function PowerPrediction() {
             />
 
             <div style={{ marginTop: 20 }}>
-              <h4>⚡ Select Device</h4>
+              <h4> Select Device</h4>
 
               <div className="premium-select-wrapper">
                 <select
@@ -174,7 +174,7 @@ export default function PowerPrediction() {
           <div className="details-card">
 
             <h4>
-              📊 Prediction for {selectedDeviceName || "-- Select a Device --"}
+               Prediction for {selectedDeviceName || "-- Select a Device --"}
             </h4>
 
             <div style={{ marginTop: 15 }}>
@@ -199,7 +199,7 @@ export default function PowerPrediction() {
               style={{ marginTop: 15 }}
               onClick={fetchPrediction}
             >
-              🚀 Fetch Predictions for {selectedDate.toLocaleDateString()}
+               Fetch Predictions for {selectedDate.toLocaleDateString()}
             </button>
 
             {prediction && (

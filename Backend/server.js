@@ -10,6 +10,8 @@ const energyRoutes = require("./routes/energyRoutes")
 const predictionRoute = require("./routes/prediction")
 const feedbackRoutes = require("./routes/feedback")
 const updateRoutes = require("./routes/update")
+const userRoutes = require("./routes/user")
+
 
 const app = express()
 
@@ -26,6 +28,7 @@ app.use("/api/energy", energyRoutes)
 app.use("/api/predict", predictionRoute)
 app.use("/api", feedbackRoutes)
 app.use("/api", updateRoutes)
+app.use("/api", userRoutes)
 
 
 

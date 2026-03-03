@@ -25,21 +25,34 @@ export default function AdminFeedback() {
   return (
     <div className="admin-dark-layout">
 
-      {/* SIDEBAR */}
-      <div className="admin-dark-sidebar">
-        <div>
-          <div className="admin-dark-logo">💎 Smart Home</div>
+       {/* SIDEBAR */}
+      <div className="dark-sidebar">
 
-          <ul>
-            <li onClick={() => navigate("/admin")}>📊 Dashboard</li>
-            <li onClick={() => navigate("/admin/update-log")}>📝 Update Log</li>
-            <li className="active">💬 User Feedback</li>
-          </ul>
+        <div className="smart-home-logo">
+          <div className="smart-icon">💎</div>
+          <div className="smart-text">
+            <span>Smart</span>
+            <span>Home</span>
+          </div>
         </div>
 
-        <button className="admin-dark-logout" onClick={logout}>
-          ⏻ Logout
-        </button>
+         <ul>
+          <li onClick={() => navigate("/admin")}>
+              📊 Dashboard
+            </li>
+          <li onClick={() => navigate("/admin/update-log")}>📝 Update Log</li>
+          <li onClick={() => navigate("/admin/feedback")}>💬 User Feedback</li>
+        </ul>
+
+        <button
+  className="premium-logout-btn"
+  onClick={() => {
+    localStorage.clear()
+    navigate("/")
+  }}
+>
+  ⏻ Logout
+</button>
       </div>
 
       {/* MAIN */}

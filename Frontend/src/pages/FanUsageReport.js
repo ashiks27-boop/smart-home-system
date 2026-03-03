@@ -202,7 +202,8 @@ export default function FanUsageReport() {
   <div className="report-title-section">
     <div className="report-icon"></div>
     <div>
-      <h2 className="report-title">Fan Usage Analytics</h2>
+       <div className="report-icon">✇</div>
+      <h2 className="report-title"> Fan Usage Analytics</h2>
       <p className="report-subtitle">
        
       </p>
