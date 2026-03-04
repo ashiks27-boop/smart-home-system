@@ -11,6 +11,8 @@ const predictionRoute = require("./routes/prediction")
 const feedbackRoutes = require("./routes/feedback")
 const updateRoutes = require("./routes/update")
 const userRoutes = require("./routes/user")
+const weatherRoutes = require("./routes/weatherRoutes")
+const openmeteo = require("./routes/openmeteo")
 
 
 const app = express()
@@ -29,6 +31,8 @@ app.use("/api/predict", predictionRoute)
 app.use("/api", feedbackRoutes)
 app.use("/api", updateRoutes)
 app.use("/api", userRoutes)
+app.use("/api/weather", weatherRoutes)
+app.use("/api/openmeteo", openmeteo)
 
 
 

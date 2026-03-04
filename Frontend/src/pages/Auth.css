@@ -5484,3 +5484,49 @@ margin:40px auto;
 }
 
 
+.hero-logo{
+font-size:22px;
+font-weight:600;
+margin-bottom:30px;
+color:#7ab8ff;
+}
+
+.hero-title{
+font-size:48px;
+font-weight:700;
+margin-bottom:15px;
+}
+
+.hero-tagline{
+font-size:18px;
+opacity:.85;
+margin-bottom:40px;
+max-width:520px;
+}
+
+.premium-login-card{
+backdrop-filter: blur(15px);
+background: rgba(255,255,255,0.05);
+border-radius:20px;
+padding:40px;
+box-shadow:0 10px 40px rgba(0,0,0,0.4);
+}
+
+.premium-login-btn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+
+.premium-login-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+
+
+
