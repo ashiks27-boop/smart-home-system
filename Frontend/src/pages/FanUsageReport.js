@@ -254,8 +254,8 @@ export default function FanUsageReport() {
             >
               {devices.map(device => (
                 <option key={device._id} value={device._id}>
-                  {device.name}
-                </option>
+  {device.company} ({device.name})
+</option>
               ))}
             </select>
           </div>

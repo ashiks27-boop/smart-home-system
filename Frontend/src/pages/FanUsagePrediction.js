@@ -4,7 +4,7 @@ import Calendar from "react-calendar"
 import "react-calendar/dist/Calendar.css"
 import "./Auth.css"
 
-export default function LightPrediction() {
+export default function FanUsagePrediction() {
 
   const navigate = useNavigate()
 
@@ -15,7 +15,7 @@ export default function LightPrediction() {
   const [prediction, setPrediction] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  /* FETCH LIGHT DEVICES */
+  /* FETCH FAN DEVICES */
   useEffect(() => {
     const userId = localStorage.getItem("userId")
     if (!userId) return
@@ -23,10 +23,13 @@ export default function LightPrediction() {
     fetch(`http://localhost:5000/api/devices/${userId}`)
       .then(res => res.json())
       .then(data => {
-        const lightDevices = data.filter(d =>
-          d.name.toLowerCase().includes("light")
+
+        const fanDevices = data.filter(d =>
+          d.name.toLowerCase().includes("fan")
         )
-        setDevices(lightDevices)
+
+        setDevices(fanDevices)
+
       })
   }, [])
 
@@ -34,91 +37,87 @@ export default function LightPrediction() {
   const selectedDeviceName =
     devices.find(d => d._id === selectedDevice)?.name || ""
 
-  /* UPDATED PREDICTION FUNCTION */
+  /* PREDICTION FUNCTION */
   const fetchPrediction = async () => {
-  if (!selectedDevice) {
-    alert("Please select a device")
-    return
-  }
 
-  setLoading(true)
-
-  try {
-    const res = await fetch(
-      `http://localhost:5000/api/predict/${selectedDevice}`
-    )
-
-    const data = await res.json()
-
-    if (data.message) {
-      alert(data.message)
-      setPrediction(null)
-      setLoading(false)
+    if (!selectedDevice) {
+      alert("Please select a device")
       return
     }
 
-    let updatedPrediction = { ...data }
+    setLoading(true)
 
-    const today = new Date()
-    const selected = new Date(selectedDate)
+    try {
 
-    // 🔥 Calculate difference in days
-    const diffTime = selected.getTime() - today.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    const avgUsageMinutes = data.averageUsageMinutes
-
-    // 🔥 SINGLE DAY
-    if (viewType === "single") {
-
-      updatedPrediction.predictedNextOnTime = selected
-
-      updatedPrediction.predictedNextOffTime = new Date(
-        selected.getTime() + (avgUsageMinutes * 60 * 1000)
+      const res = await fetch(
+        `http://localhost:5000/api/predict/${selectedDevice}`
       )
 
-      updatedPrediction.nextDayKWh =
-        data.nextDayKWh
+      const data = await res.json()
 
+      if (data.message) {
+        alert(data.message)
+        setPrediction(null)
+        setLoading(false)
+        return
+      }
+
+      let updatedPrediction = { ...data }
+
+      const selected = new Date(selectedDate)
+
+      const avgUsageMinutes = data.averageUsageMinutes
+
+      /* SINGLE DAY */
+      if (viewType === "single") {
+
+        updatedPrediction.predictedNextOnTime = selected
+
+        updatedPrediction.predictedNextOffTime = new Date(
+          selected.getTime() + (avgUsageMinutes * 60 * 1000)
+        )
+
+        updatedPrediction.nextDayKWh =
+          data.nextDayKWh
+      }
+
+      /* WEEKLY */
+      if (viewType === "week") {
+
+        const weeklyUsage = data.nextDayKWh * 7
+
+        updatedPrediction.nextWeekKWh =
+          weeklyUsage.toFixed(2)
+
+        updatedPrediction.estimatedWeeklyBill =
+          (weeklyUsage * 6).toFixed(2)
+      }
+
+      /* MONTHLY */
+      if (viewType === "month") {
+
+        const monthlyUsage = data.nextDayKWh * 30
+
+        updatedPrediction.nextMonthKWh =
+          monthlyUsage.toFixed(2)
+
+        updatedPrediction.estimatedMonthlyBill =
+          (monthlyUsage * 6).toFixed(2)
+      }
+
+      setPrediction(updatedPrediction)
+
+    } catch (err) {
+      console.error("Prediction error:", err)
     }
 
-    // 🔥 WEEKLY
-    if (viewType === "week") {
-
-      const weeklyUsage = data.nextDayKWh * 7
-
-      updatedPrediction.nextWeekKWh =
-        weeklyUsage.toFixed(2)
-
-      updatedPrediction.estimatedWeeklyBill =
-        (weeklyUsage * 6).toFixed(2)
-    }
-
-    // 🔥 MONTHLY
-    if (viewType === "month") {
-
-      const monthlyUsage = data.nextDayKWh * 30
-
-      updatedPrediction.nextMonthKWh =
-        monthlyUsage.toFixed(2)
-
-      updatedPrediction.estimatedMonthlyBill =
-        (monthlyUsage * 6).toFixed(2)
-    }
-
-    setPrediction(updatedPrediction)
-
-  } catch (err) {
-    console.error("Prediction error:", err)
+    setLoading(false)
   }
-
-  setLoading(false)
-}
 
   return (
     <div className="dashboard-dark">
 
-       {/* SIDEBAR */}
+      {/* SIDEBAR */}
       <div className="dark-sidebar">
 
         <div className="smart-home-logo">
@@ -138,23 +137,25 @@ export default function LightPrediction() {
           <li onClick={() => navigate("/predictive")}>Predictive Report</li>
           <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
           <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
-          
         </ul>
+
         <button
-  className="premium-logout-btn"
-  onClick={() => {
-    localStorage.clear()
-    navigate("/")
-  }}
->
-  ⏻ Logout
-</button>
+          className="premium-logout-btn"
+          onClick={() => {
+            localStorage.clear()
+            navigate("/")
+          }}
+        >
+          ⏻ Logout
+        </button>
+
       </div>
+
       {/* MAIN */}
       <div className="dark-main">
 
         <h2 className="premium-report-header">
-          💡 Lighting Prediction Tool
+          ✇ Fan Usage Prediction Tool
         </h2>
 
         <div className="details-layout">
@@ -167,23 +168,28 @@ export default function LightPrediction() {
             <Calendar
               onChange={setSelectedDate}
               value={selectedDate}
-              minDate={new Date()}   /* 🔥 DISABLE PAST DATES */
+              minDate={new Date()}
             />
 
             <div className="premium-select-wrapper" style={{ marginTop: 20 }}>
+
               <select
                 className="premium-select-modern"
                 value={selectedDevice}
                 onChange={(e) => setSelectedDevice(e.target.value)}
               >
-                <option value="">-- Select a Device --</option>
+                <option value="">-- Select a Fan Device --</option>
+
                 {devices.map(device => (
-                 <option key={device._id} value={device._id}>
+                  <option key={device._id} value={device._id}>
   {device.company}
 </option>
                 ))}
+
               </select>
+
               <span className="select-glow"></span>
+
             </div>
 
           </div>
@@ -192,13 +198,15 @@ export default function LightPrediction() {
           <div className="details-card">
 
             <h4>
-               Prediction for {selectedDeviceName || "-- Select a Device --"}
+              Prediction for {selectedDeviceName || "-- Select a Fan Device --"}
             </h4>
 
             <div style={{ marginTop: 15 }}>
+
               <label>View: </label>
 
               <div className="premium-select-wrapper" style={{ marginTop: 8 }}>
+
                 <select
                   className="premium-select-modern"
                   value={viewType}
@@ -208,8 +216,11 @@ export default function LightPrediction() {
                   <option value="week">Weekly</option>
                   <option value="month">Monthly</option>
                 </select>
+
                 <span className="select-glow"></span>
+
               </div>
+
             </div>
 
             <button
@@ -217,10 +228,11 @@ export default function LightPrediction() {
               style={{ marginTop: 15 }}
               onClick={fetchPrediction}
             >
-               Fetch Predictions
+              Fetch Predictions
             </button>
 
             {prediction && (
+
               <div className="prediction-result">
 
                 {viewType === "single" && (
@@ -257,6 +269,7 @@ export default function LightPrediction() {
                 )}
 
               </div>
+
             )}
 
             <p style={{ marginTop: 15, opacity: 0.7 }}>
@@ -268,6 +281,7 @@ export default function LightPrediction() {
         </div>
 
       </div>
+
     </div>
   )
 }

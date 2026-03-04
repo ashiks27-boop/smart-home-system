@@ -4,18 +4,15 @@ import Calendar from "react-calendar"
 import "react-calendar/dist/Calendar.css"
 import "./Auth.css"
 
-export default function PowerPrediction() {
+export default function TimePrediction() {
 
   const navigate = useNavigate()
 
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [devices, setDevices] = useState([])
   const [selectedDevice, setSelectedDevice] = useState("")
-  const [viewType, setViewType] = useState("single")
   const [prediction, setPrediction] = useState(null)
   const [loading, setLoading] = useState(false)
-
-  const electricityRate = 6
 
   /* FETCH DEVICES */
   useEffect(() => {
@@ -31,13 +28,11 @@ export default function PowerPrediction() {
 
   }, [])
 
-  /* SELECTED DEVICE NAME */
+  /* GET SELECTED DEVICE NAME */
   const selectedDeviceName =
-    selectedDevice === "all"
-      ? "All Devices"
-      : devices.find(d => d._id === selectedDevice)?.name || ""
+    devices.find(d => d._id === selectedDevice)?.name || ""
 
-  /* FETCH PREDICTION */
+  /* FETCH TIME PREDICTION */
   const fetchPrediction = async () => {
 
     if (!selectedDevice) {
@@ -49,56 +44,6 @@ export default function PowerPrediction() {
 
     try {
 
-      /* ALL DEVICES PREDICTION */
-      if (selectedDevice === "all") {
-
-        let totalKWh = 0
-
-        for (const device of devices) {
-
-          const res = await fetch(
-            `http://localhost:5000/api/predict/${device._id}`
-          )
-
-          const data = await res.json()
-
-          if (data.nextDayKWh) {
-            totalKWh += data.nextDayKWh
-          }
-        }
-
-        let result = {}
-
-        if (viewType === "single") {
-          result.nextDayKWh = totalKWh.toFixed(3)
-          result.estimatedCost =
-            (totalKWh * electricityRate).toFixed(2)
-        }
-
-        if (viewType === "week") {
-
-          const weeklyUsage = totalKWh * 7
-
-          result.nextWeekKWh = weeklyUsage.toFixed(2)
-          result.estimatedWeeklyBill =
-            (weeklyUsage * electricityRate).toFixed(2)
-        }
-
-        if (viewType === "month") {
-
-          const monthlyUsage = totalKWh * 30
-
-          result.nextMonthKWh = monthlyUsage.toFixed(2)
-          result.estimatedMonthlyBill =
-            (monthlyUsage * electricityRate).toFixed(2)
-        }
-
-        setPrediction(result)
-        setLoading(false)
-        return
-      }
-
-      /* SINGLE DEVICE PREDICTION */
       const res = await fetch(
         `http://localhost:5000/api/predict/${selectedDevice}`
       )
@@ -112,47 +57,20 @@ export default function PowerPrediction() {
         return
       }
 
-      let updatedPrediction = {}
+      const selected = new Date(selectedDate)
+      const avgUsageMinutes = data.averageUsageMinutes
 
-      if (viewType === "single") {
-
-        updatedPrediction.nextDayKWh =
-          data.nextDayKWh
-
-        updatedPrediction.estimatedCost =
-          (data.nextDayKWh * electricityRate).toFixed(2)
-      }
-
-      if (viewType === "week") {
-
-        const weeklyUsage =
-          data.nextDayKWh * 7
-
-        updatedPrediction.nextWeekKWh =
-          weeklyUsage.toFixed(2)
-
-        updatedPrediction.estimatedWeeklyBill =
-          (weeklyUsage * electricityRate).toFixed(2)
-      }
-
-      if (viewType === "month") {
-
-        const monthlyUsage =
-          data.nextDayKWh * 30
-
-        updatedPrediction.nextMonthKWh =
-          monthlyUsage.toFixed(2)
-
-        updatedPrediction.estimatedMonthlyBill =
-          (monthlyUsage * electricityRate).toFixed(2)
+      const updatedPrediction = {
+        predictedNextOnTime: selected,
+        predictedNextOffTime: new Date(
+          selected.getTime() + (avgUsageMinutes * 60 * 1000)
+        )
       }
 
       setPrediction(updatedPrediction)
 
     } catch (err) {
-
       console.error("Prediction error:", err)
-
     }
 
     setLoading(false)
@@ -200,7 +118,7 @@ export default function PowerPrediction() {
       <div className="dark-main">
 
         <h2 className="premium-report-header">
-          ⚡ Power Usage Prediction Tool
+          ⏱ Device Time Prediction Tool
         </h2>
 
         <div className="details-layout">
@@ -229,7 +147,6 @@ export default function PowerPrediction() {
                 >
 
                   <option value="">-- Select a Device --</option>
-                  <option value="all">All Devices</option>
 
                   {devices.map(device => (
                     <option key={device._id} value={device._id}>
@@ -254,74 +171,34 @@ export default function PowerPrediction() {
               Prediction for {selectedDeviceName || "-- Select a Device --"}
             </h4>
 
-            <div style={{ marginTop: 15 }}>
-
-              <label>View:</label>
-
-              <div className="premium-select-wrapper" style={{ marginTop: 8 }}>
-
-                <select
-                  className="premium-select-modern"
-                  value={viewType}
-                  onChange={(e) => setViewType(e.target.value)}
-                >
-                  <option value="single">Single Day</option>
-                  <option value="week">Weekly</option>
-                  <option value="month">Monthly</option>
-                </select>
-
-                <span className="select-glow"></span>
-
-              </div>
-
-            </div>
-
             <button
               className="premium-btn"
               style={{ marginTop: 15 }}
               onClick={fetchPrediction}
             >
-              Fetch Predictions for {selectedDate.toLocaleDateString()}
+              Fetch Time Prediction for {selectedDate.toLocaleDateString()}
             </button>
 
             {prediction && (
+
               <div className="prediction-result">
 
-                {viewType === "single" && (
-                  <>
-                    <h4>⚡ Estimated Usage:</h4>
-                    <p>{prediction.nextDayKWh} kWh</p>
+                <h4>⏻ Predicted ON Time:</h4>
+                <p>
+                  {new Date(prediction.predictedNextOnTime).toLocaleString()}
+                </p>
 
-                    <h4>💰 Estimated Cost:</h4>
-                    <p>₹ {prediction.estimatedCost}</p>
-                  </>
-                )}
-
-                {viewType === "week" && (
-                  <>
-                    <h4>📊 Next Week Usage:</h4>
-                    <p>{prediction.nextWeekKWh} kWh</p>
-
-                    <h4>💰 Estimated Weekly Cost:</h4>
-                    <p>₹ {prediction.estimatedWeeklyBill}</p>
-                  </>
-                )}
-
-                {viewType === "month" && (
-                  <>
-                    <h4>📅 Next Month Usage:</h4>
-                    <p>{prediction.nextMonthKWh} kWh</p>
-
-                    <h4>💰 Estimated Monthly Cost:</h4>
-                    <p>₹ {prediction.estimatedMonthlyBill}</p>
-                  </>
-                )}
+                <h4>⏻ Predicted OFF Time:</h4>
+                <p>
+                  {new Date(prediction.predictedNextOffTime).toLocaleString()}
+                </p>
 
               </div>
+
             )}
 
             <p style={{ marginTop: 15, opacity: 0.7 }}>
-              Select a date and view type, then click 'Fetch Predictions'.
+              Select a date and device, then click 'Fetch Time Prediction'.
             </p>
 
           </div>

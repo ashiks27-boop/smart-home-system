@@ -229,9 +229,9 @@ export default function LightUsageReport() {
               onChange={(e) => setSelectedDevice(e.target.value)}
             >
               {devices.map(device => (
-                <option key={device._id} value={device._id}>
-                  {device.name}
-                </option>
+               <option key={device._id} value={device._id}>
+  {device.company} ({device.name})
+</option>
               ))}
             </select>
           </div>

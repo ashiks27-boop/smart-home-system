@@ -30,6 +30,7 @@ export default function PredictiveReport() {
           <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
           
         </ul>
+        
         <button
   className="premium-logout-btn"
   onClick={() => {
@@ -57,20 +58,47 @@ export default function PredictiveReport() {
     className="prediction-card"
     onClick={() => navigate("/predictive/light")}
   >
-    <div className="prediction-icon light-icon">💡</div>
+    <div className="prediction-icon light-icon"></div>
     <h3>Light Usage Prediction</h3>
     <p>
       Forecast smart light usage patterns to automate
       energy-efficient schedules.
     </p>
   </div>
+{/* FAN */}
+<div
+  className="prediction-card"
+ onClick={() => navigate("/fan-prediction")}
+>
+  <div className="prediction-icon fan-icon"></div>
+
+  <h3>Fan Usage Prediction</h3>
+
+  <p>
+    Predict smart fan usage trends to optimize cooling
+    and reduce energy costs.
+  </p>
+</div>
+
+
+{/* TIME */}
+<div
+  className="prediction-card"
+  onClick={() => navigate("/predictive/time")}
+>
+  <div className="prediction-icon time-icon"></div>
+  <h3>Device Time Prediction</h3>
+  <p>
+    Predict when devices will turn ON and OFF based on past usage patterns.
+  </p>
+</div>
 
   {/* POWER */}
   <div
     className="prediction-card"
     onClick={() => navigate("/predictive/power")}
   >
-    <div className="prediction-icon power-icon">⚡</div>
+    <div className="prediction-icon power-icon"></div>
     <h3>Power Usage Prediction</h3>
     <p>
       Predict and optimize power consumption trends
@@ -83,7 +111,7 @@ export default function PredictiveReport() {
     className="prediction-card"
     onClick={() => navigate("/predictive/weather")}
   >
-    <div className="prediction-icon weather-icon">🌤</div>
+    <div className="prediction-icon weather-icon"></div>
     <h3>Weather & Temperature Prediction</h3>
     <p>
       Anticipate weather changes and temperature fluctuations

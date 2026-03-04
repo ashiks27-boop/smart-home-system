@@ -169,9 +169,9 @@ export default function EnergyConsumptionReport() {
               onChange={(e) => setSelectedDevice(e.target.value)}
             >
               {devices.map(device => (
-                <option key={device._id} value={device._id.toString()}>
-                  {device.name}
-                </option>
+               <option key={device._id} value={device._id}>
+  {device.company} ({device.name})
+</option>
               ))}
             </select>
 

@@ -20,6 +20,9 @@ import UpdateLog from "./pages/UpdateLog";
 import AdminFeedback from "./pages/AdminFeedback"
 import ResidentFeedback from "./pages/ResidentFeedback"
 import ResidentUpdateLog from "./pages/ResidentUpdateLog"
+import FanUsagePrediction from "./pages/FanUsagePrediction"
+import TimePrediction from "./pages/TimePrediction"
+
 
 function App() {
   return (
@@ -37,13 +40,20 @@ function App() {
         <Route path="/predictive/light" element={<LightPrediction />} />
         <Route path="/predictive/power" element={<PowerPrediction />} />
         <Route path="/predictive/weather" element={<WeatherPrediction />} />
+         <Route path="/fan-prediction" element={<FanUsagePrediction />} />
+         <Route path="/predictive/time" element={<TimePrediction />} />
        <Route path="/admin/feedback" element={<AdminFeedback />} />
 
 <Route path="/resident/feedback" element={<ResidentFeedback />} />
 <Route path="/resident/update-log" element={<ResidentUpdateLog />} />
+
+
+
+
        {/* ✅ THIS IS THE KEY ROUTE */}
         <Route path="/device-details" element={<DeviceDetails />} />
-
+     
+    
 
 <Route path="/reports/fan" element={<FanUsageReport />} />
 <Route path="/reports/light" element={<LightUsageReport />} />
