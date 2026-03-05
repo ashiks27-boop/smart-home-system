@@ -28,11 +28,22 @@ export default function DeviceDetails() {
 
   const [history, setHistory] = useState([]);
 
-  /* ⭐ FIXED WEATHER STATE */
   const [weather, setWeather] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
- 
+  const [ecoTemp, setEcoTemp] = useState(24);
+  const [comfortTemp, setComfortTemp] = useState(22);
+
+  const [onHour, setOnHour] = useState("00");
+const [onMinute, setOnMinute] = useState("00");
+
+const [offHour, setOffHour] = useState("00");
+const [offMinute, setOffMinute] = useState("00");
+
+  /* ⭐ AUTOMATION STATES */
+  const [onTime, setOnTime] = useState("");
+  const [offTime, setOffTime] = useState("");
+
   /* WEATHER */
   useEffect(() => {
     fetch(
@@ -42,11 +53,59 @@ export default function DeviceDetails() {
       .then((data) => data?.main && setWeather(data));
   }, []);
 
+  /* FETCH AI TEMPERATURE */
+  useEffect(() => {
+
+    const fetchPrediction = async () => {
+
+      const today = new Date().toISOString().split("T")[0];
+
+      try {
+
+        const res = await fetch(
+          "http://localhost:5000/api/weather/predict",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              dates: [today]
+            })
+          }
+        );
+
+        const data = await res.json();
+
+        if (data.length > 0) {
+          setEcoTemp(data[0].eco_mode_degree);
+          setComfortTemp(data[0].comfort_mode_degree);
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+
+    };
+
+    fetchPrediction();
+
+  }, []);
+
+  useEffect(() => {
+
+    if (thermoMode === "Eco") {
+      setTargetTemp(ecoTemp);
+    }
+
+    if (thermoMode === "Comfort") {
+      setTargetTemp(comfortTemp);
+    }
+
+  }, [thermoMode, ecoTemp, comfortTemp]);
+
   useEffect(() => {
     if (!userId) navigate("/");
   }, [userId, navigate]);
 
-  /* FETCH DEVICES */
   useEffect(() => {
     const fetchDevices = async () => {
       const res = await fetch(`${API_URL}/${userId}`);
@@ -72,7 +131,6 @@ export default function DeviceDetails() {
     if (userId) fetchDevices();
   }, [userId, clickedId]);
 
-  /* HISTORY */
   useEffect(() => {
     if (!selected) return;
 
@@ -114,6 +172,29 @@ export default function DeviceDetails() {
     setSelected(data.find((d) => d._id === selected._id));
   };
 
+  /* ⭐ SAVE AUTOMATION */
+  const saveAutomation = async () => {
+
+    if (!onTime || !offTime) {
+      alert("Select ON and OFF time");
+      return;
+    }
+
+    await fetch("http://localhost:5000/api/devices/schedule", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        deviceId: selected._id,
+        onTime,
+        offTime
+      })
+    });
+
+    alert("Automation Saved");
+  };
+
   if (!selected) return null;
 
   const type = selected.name?.toLowerCase();
@@ -121,7 +202,8 @@ export default function DeviceDetails() {
 
   return (
     <div className="dashboard-layout">
-       {/* SIDEBAR */}
+
+      {/* SIDEBAR */}
       <div className="dark-sidebar">
 
         <div className="smart-home-logo">
@@ -141,23 +223,25 @@ export default function DeviceDetails() {
           <li onClick={() => navigate("/predictive")}>Predictive Report</li>
           <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
           <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
-          
         </ul>
+
         <button
-  className="premium-logout-btn"
-  onClick={() => {
-    localStorage.clear()
-    navigate("/")
-  }}
->
-  ⏻ Logout
-</button>
+          className="premium-logout-btn"
+          onClick={() => {
+            localStorage.clear()
+            navigate("/")
+          }}
+        >
+          ⏻ Logout
+        </button>
       </div>
+
       <div className="dashboard-main">
+
         <div className="premium-header">
           <h2 className="premium-title">Device Details</h2>
 
-         <div className="premium-filter">
+          <div className="premium-filter">
             <label>Select Device</label>
             <select value={selectedId} onChange={(e) => handleSelect(e.target.value)}>
               {devices.map((d) => (
@@ -176,70 +260,145 @@ export default function DeviceDetails() {
           <p><b>Room:</b> {selected.location}</p>
         </div>
 
-
-         {/* LIGHT */}
+        {/* LIGHT */}
         {type === "light" && (
-          <div className="details-card">
-            <div className="action-row">
-              <button className="btn green" onClick={toggle}>Start</button>
-              <button className="btn red" onClick={toggle}>Stop</button>
+          <>
+            <div className="details-card">
+              <div className="action-row">
+                <button className="btn green" onClick={toggle}>Start</button>
+                <button className="btn red" onClick={toggle}>Stop</button>
+                <button className="btn blue" onClick={() => setShowChart(!showChart)}>
+                  Usage Chart
+                </button>
+              </div>
+            </div>
+
+            {/* ⭐ AUTOMATION */}
+            <div className="details-card premium-automation">
+
+  <div className="automation-header">
+    <h3>⚡ Smart Automation</h3>
+    <p>Schedule device activity automatically</p>
+  </div>
+
+  <div className="automation-grid">
+
+    <div className="automation-field">
+      <label>ON Time</label>
+      <input
+        type="time"
+        value={onTime}
+        onChange={(e) => setOnTime(e.target.value)}
+      />
+    </div>
+
+        <div className="automation-field">
+          <label>OFF Time</label>
+          <input
+            type="time"
+            value={offTime}
+            onChange={(e) => setOffTime(e.target.value)}
+          />
+        </div>
+    
+      </div>
+    
+      <button
+        className="premium-automation-btn"
+        onClick={saveAutomation}
+      >
+        ⚙ Save Automation
+      </button>
+    
+    </div>
+              </>
+            )}
+
+        {/* FAN */}
+        {type === "fan" && (
+          <>
+            <div className="details-card">
+              <h3>Fan Control Panel</h3>
+
+              <div className="action-row">
+                <button className="btn green" onClick={toggle}>Turn ON</button>
+                <button className="btn red" onClick={toggle}>Turn OFF</button>
+              </div>
+
+              <label>Fan Speed: <b>{fanSpeed}</b></label>
+              <input type="range" min="1" max="5" value={fanSpeed}
+                onChange={(e) => setFanSpeed(e.target.value)} className="fan-slider" />
+
               <button className="btn blue" onClick={() => setShowChart(!showChart)}>
-                Usage Chart
+                Usage Analytics
               </button>
             </div>
-          </div>
+
+            {/* ⭐ AUTOMATION */}
+           <div className="details-card premium-automation">
+
+  <div className="automation-header">
+    <h3>⚡ Smart Automation</h3>
+    <p>Schedule your device to turn ON and OFF automatically</p>
+  </div>
+
+  <div className="automation-grid">
+
+    <div className="automation-field">
+      <label>Device ON Time</label>
+      <input
+        type="time"
+        value={onTime}
+        onChange={(e) => setOnTime(e.target.value)}
+      />
+    </div>
+
+    <div className="automation-field">
+      <label>Device OFF Time</label>
+      <input
+        type="time"
+        value={offTime}
+        onChange={(e) => setOffTime(e.target.value)}
+      />
+    </div>
+
+  </div>
+
+  <button
+    className="premium-automation-btn"
+    onClick={saveAutomation}
+  >
+    ⚙ Save Automation
+  </button>
+
+</div>
+          </>
         )}
 
-          {/* FAN */}
-        {type === "fan" && (
-          <div className="details-card">
-            <h3>Fan Control Panel</h3>
-
-            <div className="action-row">
-              <button className="btn green" onClick={toggle}>Turn ON</button>
-              <button className="btn red" onClick={toggle}>Turn OFF</button>
-            </div>
-
-            <label>Fan Speed: <b>{fanSpeed}</b></label>
-            <input type="range" min="1" max="5" value={fanSpeed}
-              onChange={(e) => setFanSpeed(e.target.value)} className="fan-slider" />
-
-            <button className="btn blue" onClick={() => setShowChart(!showChart)}>
-              Usage Analytics
-            </button>
-          </div>
-        )}
-
-       
-
-        {/* ⭐ THERMOSTAT */}
+        {/* THERMOSTAT */}
         {type === "thermostat" && (
           <>
             <div className="details-card weather-pro">
-  <div className="weather-row">
+              <div className="weather-row">
+                <div>
+                  <h3 className="weather-city">Kochi</h3>
 
-    <div>
-      <h3 className="weather-city">Kochi</h3>
+                  <div className="weather-temp">
+                    {weather?.main?.temp?.toFixed(1) || "--"}°
+                    <span>C</span>
+                  </div>
 
-      <div className="weather-temp">
-        {weather?.main?.temp?.toFixed(1) || "--"}°
-        <span>C</span>
-      </div>
+                  <p className="weather-desc">
+                    {weather?.weather?.[0]?.description || "Loading..."}
+                  </p>
 
-      <p className="weather-desc">
-        {weather?.weather?.[0]?.description || "Loading..."}
-      </p>
-
-      <div className="weather-stats">
-        <span>💧 {weather?.main?.humidity || "--"}%</span>
-        <span>💨 {weather?.wind?.speed || "--"} m/s</span>
-      </div>
-    </div>
-
-
-
-  </div>
-</div>
+                  <div className="weather-stats">
+                    <span>💧 {weather?.main?.humidity || "--"}%</span>
+                    <span>💨 {weather?.wind?.speed || "--"} m/s</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="details-card">
               <h3>Thermostat Control</h3>
@@ -273,6 +432,42 @@ export default function DeviceDetails() {
                 </button>
               </div>
             </div>
+
+            {/* ⭐ AUTOMATION */}
+            <div className="details-card premium-automation">
+
+  <div className="automation-header">
+    <h3>⚡ Smart Automation</h3>
+    <p>Schedule device activity automatically</p>
+  </div>
+
+  <div className="automation-grid">
+
+    <div className="automation-field">
+      <label>ON Time</label>
+      <input
+        type="time"
+        value={onTime}
+        onChange={(e) => setOnTime(e.target.value)}
+      />
+    </div>
+
+    <div className="automation-field">
+      <label>OFF Time</label>
+      <input
+        type="time"
+        value={offTime}
+        onChange={(e) => setOffTime(e.target.value)}
+      />
+    </div>
+
+  </div>
+
+  <button className="premium-automation-btn" onClick={saveAutomation}>
+    Save Automation
+  </button>
+
+</div>
           </>
         )}
 
@@ -291,6 +486,7 @@ export default function DeviceDetails() {
             <p>⏱ Total Usage: {totalUsage.toFixed(1)} mins</p>
           </div>
         )}
+
       </div>
     </div>
   );

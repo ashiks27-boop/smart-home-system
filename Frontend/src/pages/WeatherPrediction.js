@@ -22,9 +22,24 @@ export default function WeatherPrediction() {
 
   const fetchPrediction = async () => {
 
-    const date = selectedDate.toISOString().split("T")[0]
-
     setLoading(true)
+
+    const dates = []
+    const baseDate = new Date(selectedDate)
+
+    let days = 1
+
+    if(viewType === "week") days = 7
+    if(viewType === "month") days = 30
+
+    for(let i=0;i<days;i++){
+
+      const d = new Date(baseDate)
+      d.setDate(baseDate.getDate()+i)
+
+      dates.push(d.toISOString().split("T")[0])
+
+    }
 
     try {
 
@@ -34,15 +49,13 @@ export default function WeatherPrediction() {
           "Content-Type":"application/json"
         },
         body:JSON.stringify({
-          dates:[date]
+          dates:dates
         })
       })
 
       const data = await res.json()
 
-      if(data.length>0){
-        setPrediction(data[0])
-      }
+      setPrediction(data)
 
     } catch(err){
       console.log(err)
@@ -51,7 +64,6 @@ export default function WeatherPrediction() {
     setLoading(false)
 
   }
-
 
   /* ================= LIVE WEATHER ================= */
 
@@ -91,7 +103,6 @@ export default function WeatherPrediction() {
 
   }
 
-
   return (
 
     <div className="dashboard-dark">
@@ -124,8 +135,7 @@ export default function WeatherPrediction() {
 
       </div>
 
-
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
 
       <div className="dark-main">
 
@@ -149,7 +159,6 @@ export default function WeatherPrediction() {
           </button>
 
         </div>
-
 
         {/* ================= HISTORICAL ================= */}
 
@@ -192,7 +201,6 @@ export default function WeatherPrediction() {
 
           </div>
 
-
           {/* RIGHT CARD */}
 
           <div className="details-card">
@@ -206,34 +214,53 @@ export default function WeatherPrediction() {
             >
               {loading
                 ? "Predicting..."
-                : `Fetch Predictions for ${selectedDate.toLocaleDateString()}`
+                : `Fetch Predictions`
               }
             </button>
-
 
             {prediction && (
 
               <div style={{marginTop:"20px"}}>
 
-                <p>
-                🌡 Temperature :
-                <b> {prediction.predicted_temperature} °C</b>
-                </p>
+                <h3>Prediction Results</h3>
 
-                <p>
-                🌧 Rainfall :
-                <b> {prediction.predicted_rainfall} mm</b>
-                </p>
+                {prediction.map((item,index)=>(
 
-                <p>
-                ❄ Eco Mode AC :
-                <b> {prediction.eco_mode_degree} °C</b>
-                </p>
+                  <div
+                    key={index}
+                    style={{
+                      marginTop:"10px",
+                      padding:"12px",
+                      borderRadius:"10px",
+                      background:"#1c2b3a"
+                    }}
+                  >
 
-                <p>
-                🏠 Comfort Mode AC :
-                <b> {prediction.comfort_mode_degree} °C</b>
-                </p>
+                    <p><b>Date:</b> {item.date}</p>
+
+                    <p>
+                    🌡 Temperature :
+                    <b> {item.predicted_temperature} °C</b>
+                    </p>
+
+                    <p>
+                    🌧 Rainfall :
+                    <b> {item.predicted_rainfall} mm</b>
+                    </p>
+
+                    <p>
+                    ❄ Eco Mode AC :
+                    <b> {item.eco_mode_degree} °C</b>
+                    </p>
+
+                    <p>
+                    🏠 Comfort Mode AC :
+                    <b> {item.comfort_mode_degree} °C</b>
+                    </p>
+
+                  </div>
+
+                ))}
 
               </div>
 
@@ -247,7 +274,6 @@ export default function WeatherPrediction() {
 
         )}
 
-
         {/* ================= LIVE WEATHER ================= */}
 
         {mode==="live" && (
@@ -259,7 +285,6 @@ export default function WeatherPrediction() {
         </h2>
 
         <div className="details-layout">
-
 
           {/* LEFT CARD */}
 
@@ -290,7 +315,6 @@ export default function WeatherPrediction() {
 
           </div>
 
-
           {/* RIGHT CARD */}
 
           <div className="details-card">
@@ -302,14 +326,6 @@ export default function WeatherPrediction() {
             >
               {loadingLive ? "Loading..." : "Fetch Live Predictions"}
             </button>
-
-            <p style={{marginTop:"20px",opacity:0.7}}>
-              Select a date and view type, then click
-              'Get Predictions' to see live weather data.
-            </p>
-
-
-            {/* LIVE WEATHER RESULTS */}
 
             {liveWeather && (
 
