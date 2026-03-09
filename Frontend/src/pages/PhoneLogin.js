@@ -48,12 +48,12 @@ export default function PhoneLogin() {
         <div className="hero-content">
 
           <div className="hero-logo">
-            💎 Smart Home
+           <h1 className="hero-title">
+            <br/>💎 Smart Home
+          </h1>
+ 
           </div>
 
-          <h1 className="hero-title">
-            Control Your Home <br/> From Anywhere
-          </h1>
 
           <p className="hero-tagline">
             Monitor devices, automate lighting, track energy consumption 

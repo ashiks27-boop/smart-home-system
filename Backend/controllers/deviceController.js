@@ -167,3 +167,22 @@ exports.predictNextOnOff = (req, res) => {
     }
   );
 };
+
+exports.getDeviceStatus = async (req, res) => {
+  try {
+    const device = await Device.findById(req.params.id)
+
+    if (!device) {
+      return res.status(404).json({ error: "Device not found" })
+    }
+
+    res.json({
+      status: device.status
+    })
+
+  } catch (err) {
+    res.status(500).json({
+      error: "Failed to fetch device status"
+    })
+  }
+}

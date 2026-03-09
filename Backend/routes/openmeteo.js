@@ -15,6 +15,7 @@ router.post("/predict", async (req, res) => {
     let days = 1
 
     if (viewType === "week") days = 7
+    
     if (viewType === "month") days = 14
 
     const response = await axios.get(

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import "./Auth.css"
 
 export default function AdminDashboard() {
+
   const navigate = useNavigate()
   const adminName = localStorage.getItem("userName") || "Admin"
 
@@ -38,80 +39,116 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-         <ul>
+        <ul>
           <li className="active">Dashboard</li>
-          <li onClick={() => navigate("/admin/update-log")}> Update Log</li>
-          <li onClick={() => navigate("/admin/feedback")}> User Feedback</li>
+          <li onClick={() => navigate("/admin/update-log")}>Update Log</li>
+          <li onClick={() => navigate("/admin/feedback")}>User Feedback</li>
         </ul>
 
         <button
-  className="premium-logout-btn"
-  onClick={() => {
-    localStorage.clear()
-    navigate("/")
-  }}
->
-  ⏻ Logout
-</button>
+          className="premium-logout-btn"
+          onClick={() => {
+            localStorage.clear()
+            navigate("/")
+          }}
+        >
+          ⏻ Logout
+        </button>
+
       </div>
+
 
       {/* MAIN */}
       <div className="admin-main-pro">
 
-         <div className="locations-header premium-header">
+        <div className="locations-header premium-header">
           <div>
             <h2>Admin Dashboard</h2>
             <p>System Overview & Management</p>
           </div>
-          
         </div>
 
-        {/* STAT CARDS */}
+
+        {/* STAT CARD */}
         <div className="stats-grid">
-          <div className="stat-card">
-            <h6>Total Residents</h6>
-            <h3>{users.length}</h3>
-            <span>Registered Users</span>
+
+          <div className="stat-card premium-stat">
+            <div className="stat-icon"></div>
+
+            <div>
+              <h6>Total Residents</h6>
+              <h2>{users.length}</h2>
+              <span>Registered Users</span>
+            </div>
           </div>
 
-          
         </div>
 
-        {/* USERS TABLE */}
-        <div className="user-table-card">
-          <h4>Registered Residents</h4>
+
+        {/* USERS LIST */}
+        <div className="user-table-card premium-users">
+
+          <div className="table-header">
+            <h4>Registered Residents</h4>
+            <span className="table-sub">
+              Manage and monitor resident accounts
+            </span>
+          </div>
 
           {loading ? (
             <p>Loading users...</p>
           ) : users.length === 0 ? (
             <p>No residents found.</p>
           ) : (
-            <table className="pro-table">
+
+            <table className="pro-table premium-table">
+
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th>Resident</th>
                   <th>Phone</th>
-                  <th>Role</th>
+                  <th>Status</th>
                 </tr>
               </thead>
+
               <tbody>
+
                 {users.map(user => (
+
                   <tr key={user._id}>
-                    <td>{user.name}</td>
+
+                    <td className="user-cell">
+                      <div className="user-avatar">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+
+                      <div>
+                        <strong>{user.name}</strong>
+                      </div>
+                    </td>
+
                     <td>{user.phone}</td>
+
                     <td>
-                      <span className="role-badge">
-                        {user.role}
+                      <span className="status-badge active">
+                        ● Active
                       </span>
                     </td>
+
                   </tr>
+
                 ))}
+
               </tbody>
+
             </table>
+
           )}
+
         </div>
 
       </div>
+
     </div>
   )
 }

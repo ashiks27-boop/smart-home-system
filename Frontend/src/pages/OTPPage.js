@@ -77,7 +77,7 @@ export default function OTPPage() {
       <div className="hero-glow"></div>
 
       <div className="hero-content">
-        <h1 className="hero-title">SMART HOME</h1>
+        <h1 className="hero-title">💎 SMART HOME</h1>
 
         <p className="hero-tagline">
           Secure authentication system protecting your smart home ecosystem.

@@ -78,12 +78,12 @@ export default function ResidentLocations() {
         <ul>
           <li onClick={() => navigate("/resident")}>Home</li>
           <li onClick={() => navigate("/devices")}>Devices</li>
-          <li onClick={() => navigate("/locations")}>Locations</li>
+         
           <li onClick={() => navigate("/device-details")}>Device Details</li>
           <li onClick={() => navigate("/reports")}>Reports</li>
           <li onClick={() => navigate("/predictive")}>Predictive Report</li>
-          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
-          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback </li>
+          <li onClick={() => navigate("/resident/update-log")}>Updates</li>
           
         </ul>
         <button

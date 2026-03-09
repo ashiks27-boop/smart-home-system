@@ -97,7 +97,7 @@ export default function ResidentDevices() {
 
   const getIcon = (type) => {
     if (type === "Light") return "💡";
-    if (type === "Fan") return "🌀";
+    if (type === "Fan") return "✇";
     if (type === "Thermostat") return "🌡️";
     if (type === "AC") return "❄️";
     return "🔌";
@@ -123,8 +123,8 @@ export default function ResidentDevices() {
           <li onClick={() => navigate("/device-details")}>Device Details</li>
           <li onClick={() => navigate("/reports")}>Reports</li>
           <li onClick={() => navigate("/predictive")}>Predictive Report</li>
-          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
-          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback </li>
+          <li onClick={() => navigate("/resident/update-log")}>Updates</li>
           
         </ul>
         <button

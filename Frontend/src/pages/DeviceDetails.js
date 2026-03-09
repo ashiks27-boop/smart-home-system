@@ -131,29 +131,34 @@ const [offMinute, setOffMinute] = useState("00");
     if (userId) fetchDevices();
   }, [userId, clickedId]);
 
-  useEffect(() => {
-    if (!selected) return;
+ useEffect(() => {
 
-    const fetchHistory = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/devices/history/${selected._id}`
-        );
-        const data = await res.json();
+if (!selected) return;
 
-        const formatted = data.map((h) => ({
-          time: new Date(h.createdAt).toLocaleTimeString(),
-          usage: Math.max((h.durationSeconds || 0) / 60, 0.1),
-        }));
+const fetchHistory = async () => {
 
-        setHistory(formatted);
-      } catch {
-        setHistory([]);
-      }
-    };
+const res = await fetch(
+`http://localhost:5000/api/devices/history/${selected._id}`
+)
 
-    fetchHistory();
-  }, [selected]);
+const data = await res.json()
+
+const formatted = data.map(h => ({
+
+date:new Date(h.createdAt).toLocaleDateString(),
+time:new Date(h.createdAt).toLocaleTimeString(),
+
+usage:Math.max((h.durationSeconds || 0)/60,0.1)
+
+}))
+
+setHistory(formatted)
+
+}
+
+fetchHistory()
+
+}, [selected])
 
   const handleSelect = (id) => {
     const dev = devices.find((d) => d._id === id);
@@ -162,16 +167,31 @@ const [offMinute, setOffMinute] = useState("00");
     setShowChart(false);
   };
 
-  const toggle = async () => {
-    await fetch(`${API_URL}/toggle/${selected._id}`, { method: "PUT" });
+const toggle = async () => {
 
-    const res = await fetch(`${API_URL}/${userId}`);
+  try {
+
+    const res = await fetch(`${API_URL}/toggle/${selected._id}`, {
+      method: "PUT"
+    });
+
     const data = await res.json();
 
-    setDevices(data);
-    setSelected(data.find((d) => d._id === selected._id));
-  };
+    // update selected device instantly
+    setSelected(data.device);
 
+    // update device list
+    setDevices(prev =>
+      prev.map(d => d._id === data.device._id ? data.device : d)
+    );
+
+  } catch (err) {
+
+    console.log("Toggle error", err);
+
+  }
+
+};
   /* ⭐ SAVE AUTOMATION */
   const saveAutomation = async () => {
 
@@ -218,11 +238,11 @@ const [offMinute, setOffMinute] = useState("00");
           <li onClick={() => navigate("/resident")}>Home</li>
           <li onClick={() => navigate("/devices")}>Devices</li>
           <li onClick={() => navigate("/locations")}>Locations</li>
-          <li onClick={() => navigate("/device-details")}>Device Details</li>
+         
           <li onClick={() => navigate("/reports")}>Reports</li>
           <li onClick={() => navigate("/predictive")}>Predictive Report</li>
-          <li onClick={() => navigate("/resident/feedback")}>Feedback and Update Log</li>
-          <li onClick={() => navigate("/resident/update-log")}>Update Log</li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback </li>
+          <li onClick={() => navigate("/resident/update-log")}>Updates</li>
         </ul>
 
         <button
@@ -473,15 +493,37 @@ const [offMinute, setOffMinute] = useState("00");
 
         {showChart && (
           <div className="details-card">
-            <ResponsiveContainer width="100%" height={260}>
-              <LineChart data={history}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="usage" />
-              </LineChart>
-            </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height={260}>
+  <LineChart data={history}>
+    
+    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+
+    <XAxis dataKey="date" stroke="#94a3b8" />
+
+    <YAxis stroke="#94a3b8" />
+
+    <Tooltip
+      contentStyle={{
+        backgroundColor: "#0f172a",
+        border: "1px solid #334155",
+        borderRadius: "10px",
+        color: "#fff"
+      }}
+      labelStyle={{ color: "#38bdf8" }}
+      itemStyle={{ color: "#fff" }}
+      formatter={(value) => `${value.toFixed(1)} mins`}
+    />
+
+    <Line
+      type="monotone"
+      dataKey="usage"
+      stroke="#38bdf8"
+      strokeWidth={3}
+      dot={{ r: 4 }}
+    />
+
+  </LineChart>
+</ResponsiveContainer>
 
             <p>⏱ Total Usage: {totalUsage.toFixed(1)} mins</p>
           </div>
