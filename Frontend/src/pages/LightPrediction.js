@@ -225,11 +225,7 @@ export default function LightPrediction() {
 
                 {viewType === "single" && (
                   <>
-                    <h4>⏻ Predicted ON Time:</h4>
-                    <p>{new Date(prediction.predictedNextOnTime).toLocaleString()}</p>
-
-                    <h4>⏻ Predicted OFF Time:</h4>
-                    <p>{new Date(prediction.predictedNextOffTime).toLocaleString()}</p>
+                    
 
                     <h4>⚡ Estimated Usage:</h4>
                     <p>{prediction.nextDayKWh} kWh</p>

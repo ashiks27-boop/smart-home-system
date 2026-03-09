@@ -85,6 +85,20 @@ export default function PredictiveReport() {
             </p>
           </div>
 
+          <div
+ className="report-card"
+  onClick={() => navigate("/thermo-prediction")}
+>
+  <div className="report-icon">🌡</div>
+
+  <h3>Thermostat Usage Prediction</h3>
+
+  <p>
+    Predict thermostat temperature usage patterns to optimize
+    smart climate control and energy efficiency.
+  </p>
+</div>
+
 
           {/* DEVICE TIME */}
           <div

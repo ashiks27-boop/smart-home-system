@@ -257,7 +257,7 @@ export default function LightUsageReport() {
                 <table className="energy-table">
                   <thead>
                     <tr>
-                      <th>Status</th>
+                      
                       <th>Start</th>
                       <th>End</th>
                       <th>kWh</th>
@@ -266,7 +266,7 @@ export default function LightUsageReport() {
                   <tbody>
                     {events.map((event, index) => (
                       <tr key={index}>
-                        <td>{event.status}</td>
+                       
                         <td>{new Date(event.startTime).toLocaleString()}</td>
                         <td>{new Date(event.endTime).toLocaleString()}</td>
                         <td>{event.kWh}</td>

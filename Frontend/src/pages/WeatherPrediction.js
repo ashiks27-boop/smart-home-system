@@ -253,16 +253,7 @@ export default function WeatherPrediction() {
                     <b> {item.predicted_rainfall} mm</b>
                     </p>
 
-                    <p>
-                    ❄ Eco Mode AC :
-                    <b> {item.eco_mode_degree} °C</b>
-                    </p>
-
-                    <p>
-                    🏠 Comfort Mode AC :
-                    <b> {item.comfort_mode_degree} °C</b>
-                    </p>
-
+                   
                   </div>
 
                 ))}

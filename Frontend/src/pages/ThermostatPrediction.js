@@ -4,7 +4,7 @@ import Calendar from "react-calendar"
 import "react-calendar/dist/Calendar.css"
 import "./Auth.css"
 
-export default function FanUsagePrediction() {
+export default function ThermostatPrediction() {
 
   const navigate = useNavigate()
 
@@ -15,8 +15,9 @@ export default function FanUsagePrediction() {
   const [prediction, setPrediction] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  /* FETCH FAN DEVICES */
+  /* FETCH THERMOSTAT DEVICES */
   useEffect(() => {
+
     const userId = localStorage.getItem("userId")
     if (!userId) return
 
@@ -24,13 +25,14 @@ export default function FanUsagePrediction() {
       .then(res => res.json())
       .then(data => {
 
-        const fanDevices = data.filter(d =>
-          d.name.toLowerCase().includes("fan")
+        const thermoDevices = data.filter(d =>
+          d.name.toLowerCase().includes("thermostat")
         )
 
-        setDevices(fanDevices)
+        setDevices(thermoDevices)
 
       })
+
   }, [])
 
   /* GET SELECTED DEVICE NAME */
@@ -41,7 +43,7 @@ export default function FanUsagePrediction() {
   const fetchPrediction = async () => {
 
     if (!selectedDevice) {
-      alert("Please select a device")
+      alert("Please select a thermostat device")
       return
     }
 
@@ -77,11 +79,10 @@ export default function FanUsagePrediction() {
           selected.getTime() + (avgUsageMinutes * 60 * 1000)
         )
 
-        updatedPrediction.nextDayKWh =
-          data.nextDayKWh
+        updatedPrediction.nextDayKWh = data.nextDayKWh
       }
 
-      /* WEEKLY */
+      /* WEEK */
       if (viewType === "week") {
 
         const weeklyUsage = data.nextDayKWh * 7
@@ -93,7 +94,7 @@ export default function FanUsagePrediction() {
           (weeklyUsage * 6).toFixed(2)
       }
 
-      /* MONTHLY */
+      /* MONTH */
       if (viewType === "month") {
 
         const monthlyUsage = data.nextDayKWh * 30
@@ -112,6 +113,7 @@ export default function FanUsagePrediction() {
     }
 
     setLoading(false)
+
   }
 
   return (
@@ -135,7 +137,7 @@ export default function FanUsagePrediction() {
           <li onClick={() => navigate("/device-details")}>Device Details</li>
           <li onClick={() => navigate("/reports")}>Reports</li>
           <li onClick={() => navigate("/predictive")}>Predictive Report</li>
-          <li onClick={() => navigate("/resident/feedback")}>Feedback </li>
+          <li onClick={() => navigate("/resident/feedback")}>Feedback</li>
           <li onClick={() => navigate("/resident/update-log")}>Updates</li>
         </ul>
 
@@ -155,7 +157,7 @@ export default function FanUsagePrediction() {
       <div className="dark-main">
 
         <h2 className="premium-report-header">
-          ✇ Fan Usage Prediction Tool
+          🌡 Thermostat Usage Prediction Tool
         </h2>
 
         <div className="details-layout">
@@ -178,12 +180,12 @@ export default function FanUsagePrediction() {
                 value={selectedDevice}
                 onChange={(e) => setSelectedDevice(e.target.value)}
               >
-                <option value="">-- Select a Fan Device --</option>
+                <option value="">-- Select a Thermostat Device --</option>
 
                 {devices.map(device => (
                   <option key={device._id} value={device._id}>
-  {device.company}
-</option>
+                    {device.company}
+                  </option>
                 ))}
 
               </select>
@@ -198,12 +200,12 @@ export default function FanUsagePrediction() {
           <div className="details-card">
 
             <h4>
-              Prediction for {selectedDeviceName || "-- Select a Fan Device --"}
+              Prediction for {selectedDeviceName || "-- Select a Thermostat Device --"}
             </h4>
 
             <div style={{ marginTop: 15 }}>
 
-              <label>View: </label>
+              <label>View:</label>
 
               <div className="premium-select-wrapper" style={{ marginTop: 8 }}>
 
@@ -237,28 +239,28 @@ export default function FanUsagePrediction() {
 
                 {viewType === "single" && (
                   <>
-                  
-                    <h4>⚡ Estimated Usage:</h4>
+                   
+                    <h4>⚡ Estimated Energy:</h4>
                     <p>{prediction.nextDayKWh} kWh</p>
                   </>
                 )}
 
                 {viewType === "week" && (
                   <>
-                    <h4>📊 Next Week Usage:</h4>
+                    <h4>📊 Next Week Energy:</h4>
                     <p>{prediction.nextWeekKWh} kWh</p>
 
-                    <h4>💰 Estimated Weekly Bill:</h4>
+                    <h4>💰 Estimated Weekly Cost:</h4>
                     <p>₹ {prediction.estimatedWeeklyBill}</p>
                   </>
                 )}
 
                 {viewType === "month" && (
                   <>
-                    <h4>📅 Next Month Usage:</h4>
+                    <h4>📅 Next Month Energy:</h4>
                     <p>{prediction.nextMonthKWh} kWh</p>
 
-                    <h4>💰 Estimated Monthly Bill:</h4>
+                    <h4>💰 Estimated Monthly Cost:</h4>
                     <p>₹ {prediction.estimatedMonthlyBill}</p>
                   </>
                 )}

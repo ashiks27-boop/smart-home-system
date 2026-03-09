@@ -22,6 +22,7 @@ import ResidentFeedback from "./pages/ResidentFeedback"
 import ResidentUpdateLog from "./pages/ResidentUpdateLog"
 import FanUsagePrediction from "./pages/FanUsagePrediction"
 import TimePrediction from "./pages/TimePrediction"
+import ThermostatPrediction from "./pages/ThermostatPrediction"
 
 
 function App() {
@@ -50,6 +51,8 @@ function App() {
 
 
 
+
+
        {/* ✅ THIS IS THE KEY ROUTE */}
         <Route path="/device-details" element={<DeviceDetails />} />
      
@@ -59,6 +62,7 @@ function App() {
 <Route path="/reports/light" element={<LightUsageReport />} />
 <Route path="/reports/energy" element={<EnergyConsumptionReport />} />
 <Route path="/reports/thermostat" element={<ThermReport />} />
+<Route path="/thermo-prediction" element={<ThermostatPrediction />} />
 
 
         

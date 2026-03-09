@@ -143,13 +143,25 @@ const res = await fetch(
 
 const data = await res.json()
 
-const formatted = data.map(h => ({
+const usageMap = {}
 
-date:new Date(h.createdAt).toLocaleDateString(),
-time:new Date(h.createdAt).toLocaleTimeString(),
+data.forEach(h => {
 
-usage:Math.max((h.durationSeconds || 0)/60,0.1)
+  const date = new Date(h.createdAt).toLocaleDateString()
 
+  const minutes = (h.durationSeconds || 0) / 60
+
+  if(!usageMap[date]){
+    usageMap[date] = 0
+  }
+
+  usageMap[date] += minutes
+
+})
+
+const formatted = Object.keys(usageMap).map(date => ({
+  date,
+  usage: parseFloat(usageMap[date].toFixed(2))
 }))
 
 setHistory(formatted)
