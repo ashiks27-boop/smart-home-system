@@ -4,52 +4,34 @@ import API from "../services/api";
 import "./Auth.css";
 
 export default function PhoneLogin() {
+
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [nameError, setNameError] = useState("");
 
+  const [showRegisterPopup, setShowRegisterPopup] = useState(false);
+  const [cleanedPhone, setCleanedPhone] = useState("");
+
   const navigate = useNavigate();
 
-const validateName = (value) => {
-  if (value.length < 2) {
-    return "Name must be at least 2 characters";
-  }
-  return "";
-};
+  const validateName = (value) => {
+    if (value.length < 2) {
+      return "Name must be at least 2 characters";
+    }
+    return "";
+  };
 
-const handleNameChange = (e) => {
-  const value = e.target.value;
-  setName(value);
-  setNameError(validateName(value));
-};
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+    setNameError(validateName(value));
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const nameValidationError = validateName(name);
-  if (nameValidationError) {
-    alert(nameValidationError);
-    return;
-  }
-
-  if (!phone.trim()) {
-    alert("Enter phone number");
-    return;
-  }
-
-  const cleanedPhone = phone.replace(/\D/g, "");
-
-  if (cleanedPhone.length !== 10) {
-    alert("Phone number must be exactly 10 digits");
-    return;
-  }
-
-  try {
-    setLoading(true);
+  const sendOTP = async (phoneNumber) => {
 
     const res = await API.post("/phone", {
-      phone: cleanedPhone,
+      phone: phoneNumber,
       name: name.trim()
     });
 
@@ -58,20 +40,93 @@ const handleSubmit = async (e) => {
     localStorage.setItem("otpAllowed", "true");
 
     navigate("/otp");
+  };
 
-  } catch {
-    alert("Server error");
-  } finally {
-    setLoading(false);
-  }
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const nameValidationError = validateName(name);
+    if (nameValidationError) {
+      alert(nameValidationError);
+      return;
+    }
+
+    if (!phone.trim()) {
+      alert("Enter phone number");
+      return;
+    }
+
+    const cleaned = phone.replace(/\D/g, "");
+
+    if (cleaned.length !== 10) {
+      alert("Phone number must be exactly 10 digits");
+      return;
+    }
+
+    setCleanedPhone(cleaned);
+
+    try {
+
+      setLoading(true);
+
+      const res = await API.post("/check-user", {
+        phone: cleaned
+      });
+
+      if (res.data.exists) {
+
+        await sendOTP(cleaned);
+
+      } else {
+
+        setShowRegisterPopup(true);
+
+      }
+
+    } catch {
+
+      alert("Server error");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
+
+  const handleRegister = async () => {
+
+    try {
+
+      setLoading(true);
+
+      await API.post("/register", {
+        name: name.trim(),
+        phone: cleanedPhone
+      });
+
+      await sendOTP(cleanedPhone);
+
+    } catch {
+
+      alert("Registration failed");
+
+    } finally {
+
+      setShowRegisterPopup(false);
+      setLoading(false);
+
+    }
+
+  };
 
   return (
     <div className="premium-login-container">
+
       {/* LEFT SECTION */}
       <div className="premium-hero">
         <div className="hero-content">
+
           <div className="hero-logo">
             <h1 className="hero-title">
               <span className="hero-icon">✨</span>
@@ -80,11 +135,12 @@ const handleSubmit = async (e) => {
           </div>
 
           <p className="hero-tagline">
-            Experience the future of living with intelligent automation, 
+            Experience the future of living with intelligent automation,
             real-time insights, and seamless control at your fingertips.
           </p>
 
           <div className="feature-grid">
+
             <div className="feature-card">
               <div className="feature-icon-wrapper">
                 <span className="feature-icon">💡</span>
@@ -124,68 +180,50 @@ const handleSubmit = async (e) => {
                 <p>Climate-adaptive control</p>
               </div>
             </div>
+
           </div>
 
-          <div className="hero-stats">
-            <div className="stat-item">
-              <span className="stat-value">10k+</span>
-              <span className="stat-label">Active Users</span>
-            </div>
-            <div className="stat-divider"></div>
-            <div className="stat-item">
-              <span className="stat-value">50k+</span>
-              <span className="stat-label">Devices Connected</span>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* RIGHT LOGIN SECTION - REDESIGNED */}
+      {/* RIGHT LOGIN */}
       <div className="premium-login-card">
+
         <div className="login-card-content">
-          {/* Welcome Badge */}
+
           <div className="welcome-badge">
             <span className="welcome-icon">👋</span>
             <span>Welcome back!</span>
           </div>
 
-          {/* Header */}
           <div className="login-header">
             <h2>Sign in to continue</h2>
             <p>Enter your credentials to access your smart home</p>
           </div>
 
-          {/* Decorative Line */}
           <div className="decorative-line">
             <span className="line"></span>
             <span className="line-icon">🔒</span>
             <span className="line"></span>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="premium-form">
-            {/* Name Field */}
+
             <div className="form-field">
               <div className="field-label">
                 <span className="label-main">FULL NAME</span>
-               
               </div>
-              
+
               <div className="input-container">
                 <input
                   type="text"
-                  id="fullName"
                   placeholder="e.g., John A. Doe"
                   value={name}
                   onChange={handleNameChange}
                   required
-                  className={`premium-input ${nameError ? 'input-error' : name ? 'input-filled' : ''}`}
-                  autoComplete="name"
+                  className={`premium-input ${nameError ? "input-error" : name ? "input-filled" : ""}`}
                 />
                 <span className="input-icon">👤</span>
-                {name && !nameError && (
-                  <span className="input-valid">✓</span>
-                )}
               </div>
 
               {nameError && (
@@ -195,53 +233,37 @@ const handleSubmit = async (e) => {
                 </div>
               )}
 
-              
             </div>
 
-            {/* Phone Field */}
             <div className="form-field">
               <div className="field-label">
                 <span className="label-main">PHONE NUMBER</span>
               </div>
-              
+
               <div className="input-container">
                 <input
                   type="tel"
-                  id="phoneNumber"
-                  placeholder="e.g., +1 234 567 8900"
+                  placeholder="e.g., 9876543210"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
-                  className={`premium-input ${phone ? 'input-filled' : ''}`}
-                  autoComplete="tel"
+                  className={`premium-input ${phone ? "input-filled" : ""}`}
                 />
                 <span className="input-icon">📱</span>
               </div>
 
-             
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="premium-login-btn"
               disabled={loading || !!nameError}
             >
-              {loading ? (
-                <span className="btn-loading">
-                  <span className="loading-spinner"></span>
-                  SENDING VERIFICATION CODE...
-                </span>
-              ) : (
-                <span className="btn-text">
-                  SEND VERIFICATION CODE
-                  <span className="btn-icon">→</span>
-                </span>
-              )}
+              {loading ? "Checking..." : "SEND VERIFICATION CODE"}
             </button>
+
           </form>
 
-          {/* Security Badge */}
           <div className="security-badge">
             <div className="security-icon">🛡️</div>
             <div className="security-text">
@@ -250,9 +272,50 @@ const handleSubmit = async (e) => {
             </div>
           </div>
 
-          
         </div>
       </div>
+
+      {/* REGISTER POPUP */}
+      {showRegisterPopup && (
+  <div className="register-popup-overlay">
+
+    <div className="register-popup-card">
+
+      <div className="popup-icon">👤</div>
+
+      <h3 className="popup-title">New User Detected</h3>
+
+      <p className="popup-text">
+        This phone number is not registered.
+        <br />
+        Do you want to create a SmartHome account?
+      </p>
+
+      <div className="popup-buttons">
+
+        <button
+          className="popup-btn confirm"
+          onClick={handleRegister}
+        >
+          Yes, Register
+        </button>
+
+        <button
+          className="popup-btn cancel"
+          onClick={() => setShowRegisterPopup(false)}
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    
+
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }
