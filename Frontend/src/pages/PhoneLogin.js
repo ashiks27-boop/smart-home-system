@@ -4,151 +4,255 @@ import API from "../services/api";
 import "./Auth.css";
 
 export default function PhoneLogin() {
-
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [nameError, setNameError] = useState("");
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const validateName = (value) => {
+  if (value.length < 2) {
+    return "Name must be at least 2 characters";
+  }
+  return "";
+};
 
-    if (!name.trim() || !phone.trim()) {
-      alert("Enter name and phone");
-      return;
-    }
+const handleNameChange = (e) => {
+  const value = e.target.value;
+  setName(value);
+  setNameError(validateName(value));
+};
 
-    try {
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-      setLoading(true);
+  const nameValidationError = validateName(name);
+  if (nameValidationError) {
+    alert(nameValidationError);
+    return;
+  }
 
-      const res = await API.post("/phone", { phone, name });
+  if (!phone.trim()) {
+    alert("Enter phone number");
+    return;
+  }
 
-      localStorage.setItem("userId", res.data.userId);
-      localStorage.setItem("userName", name);
-      localStorage.setItem("otpAllowed", "true");
+  const cleanedPhone = phone.replace(/\D/g, "");
 
-      navigate("/otp");
+  if (cleanedPhone.length !== 10) {
+    alert("Phone number must be exactly 10 digits");
+    return;
+  }
 
-    } catch {
-      alert("Server error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+
+    const res = await API.post("/phone", {
+      phone: cleanedPhone,
+      name: name.trim()
+    });
+
+    localStorage.setItem("userId", res.data.userId);
+    localStorage.setItem("userName", name.trim());
+    localStorage.setItem("otpAllowed", "true");
+
+    navigate("/otp");
+
+  } catch {
+    alert("Server error");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
-
     <div className="premium-login-container">
-
       {/* LEFT SECTION */}
       <div className="premium-hero">
-
         <div className="hero-content">
-
           <div className="hero-logo">
-           <h1 className="hero-title">
-            <br/>💎 Smart Home
-          </h1>
- 
+            <h1 className="hero-title">
+              <span className="hero-icon">✨</span>
+              <br/>SmartHome<span className="hero-dot">.</span>
+            </h1>
           </div>
 
-
           <p className="hero-tagline">
-            Monitor devices, automate lighting, track energy consumption 
-            and control everything from one intelligent dashboard.
+            Experience the future of living with intelligent automation, 
+            real-time insights, and seamless control at your fingertips.
           </p>
 
           <div className="feature-grid">
-
             <div className="feature-card">
-              <span>💡</span>
-              <div>
+              <div className="feature-icon-wrapper">
+                <span className="feature-icon">💡</span>
+              </div>
+              <div className="feature-text">
                 <h4>Smart Lighting</h4>
-                <p>Automated brightness and schedules</p>
+                <p>Adaptive brightness & schedules</p>
               </div>
             </div>
 
             <div className="feature-card">
-              <span>🔐</span>
-              <div>
+              <div className="feature-icon-wrapper">
+                <span className="feature-icon">🔐</span>
+              </div>
+              <div className="feature-text">
                 <h4>Secure Access</h4>
-                <p>OTP based authentication</p>
+                <p>Two-factor authentication</p>
               </div>
             </div>
 
             <div className="feature-card">
-              <span>📊</span>
-              <div>
+              <div className="feature-icon-wrapper">
+                <span className="feature-icon">📊</span>
+              </div>
+              <div className="feature-text">
                 <h4>Energy Analytics</h4>
-                <p>Real time consumption reports</p>
+                <p>Live consumption tracking</p>
               </div>
             </div>
 
             <div className="feature-card">
-              <span>🌦</span>
-              <div>
+              <div className="feature-icon-wrapper">
+                <span className="feature-icon">🌦️</span>
+              </div>
+              <div className="feature-text">
                 <h4>Weather Automation</h4>
-                <p>Climate based device control</p>
+                <p>Climate-adaptive control</p>
               </div>
             </div>
-
           </div>
 
+          <div className="hero-stats">
+            <div className="stat-item">
+              <span className="stat-value">10k+</span>
+              <span className="stat-label">Active Users</span>
+            </div>
+            <div className="stat-divider"></div>
+            <div className="stat-item">
+              <span className="stat-value">50k+</span>
+              <span className="stat-label">Devices Connected</span>
+            </div>
+          </div>
         </div>
-
       </div>
 
-
-      {/* RIGHT LOGIN SECTION */}
+      {/* RIGHT LOGIN SECTION - REDESIGNED */}
       <div className="premium-login-card">
-
-        <div className="login-header">
-          <h2>Welcome Back</h2>
-          <p>Login securely using your phone number</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="premium-form">
-
-          <div className="input-wrapper">
-            <input
-              type="text"
-              placeholder=" "
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <label>Full Name</label>
+        <div className="login-card-content">
+          {/* Welcome Badge */}
+          <div className="welcome-badge">
+            <span className="welcome-icon">👋</span>
+            <span>Welcome back!</span>
           </div>
 
-          <div className="input-wrapper">
-            <input
-              type="text"
-              placeholder=" "
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-            <label>Phone Number</label>
+          {/* Header */}
+          <div className="login-header">
+            <h2>Sign in to continue</h2>
+            <p>Enter your credentials to access your smart home</p>
           </div>
 
-          <button
-            type="submit"
-            className="premium-login-btn"
-            disabled={loading}
-          >
-            {loading ? "Sending OTP..." : "Send OTP"}
-          </button>
+          {/* Decorative Line */}
+          <div className="decorative-line">
+            <span className="line"></span>
+            <span className="line-icon">🔒</span>
+            <span className="line"></span>
+          </div>
 
-        </form>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="premium-form">
+            {/* Name Field */}
+            <div className="form-field">
+              <div className="field-label">
+                <span className="label-main">FULL NAME</span>
+               
+              </div>
+              
+              <div className="input-container">
+                <input
+                  type="text"
+                  id="fullName"
+                  placeholder="e.g., John A. Doe"
+                  value={name}
+                  onChange={handleNameChange}
+                  required
+                  className={`premium-input ${nameError ? 'input-error' : name ? 'input-filled' : ''}`}
+                  autoComplete="name"
+                />
+                <span className="input-icon">👤</span>
+                {name && !nameError && (
+                  <span className="input-valid">✓</span>
+                )}
+              </div>
 
-        <div className="secure-text">
-          🔒 OTP verification ensures secure login
+              {nameError && (
+                <div className="field-error">
+                  <span className="error-icon">⚠️</span>
+                  <span>{nameError}</span>
+                </div>
+              )}
+
+              
+            </div>
+
+            {/* Phone Field */}
+            <div className="form-field">
+              <div className="field-label">
+                <span className="label-main">PHONE NUMBER</span>
+              </div>
+              
+              <div className="input-container">
+                <input
+                  type="tel"
+                  id="phoneNumber"
+                  placeholder="e.g., +1 234 567 8900"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  className={`premium-input ${phone ? 'input-filled' : ''}`}
+                  autoComplete="tel"
+                />
+                <span className="input-icon">📱</span>
+              </div>
+
+             
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="premium-login-btn"
+              disabled={loading || !!nameError}
+            >
+              {loading ? (
+                <span className="btn-loading">
+                  <span className="loading-spinner"></span>
+                  SENDING VERIFICATION CODE...
+                </span>
+              ) : (
+                <span className="btn-text">
+                  SEND VERIFICATION CODE
+                  <span className="btn-icon">→</span>
+                </span>
+              )}
+            </button>
+          </form>
+
+          {/* Security Badge */}
+          <div className="security-badge">
+            <div className="security-icon">🛡️</div>
+            <div className="security-text">
+              <strong>OTP Verification</strong>
+              <span>Secure 2-factor authentication</span>
+            </div>
+          </div>
+
+          
         </div>
-
       </div>
-
     </div>
   );
 }
